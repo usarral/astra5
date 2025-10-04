@@ -1,6 +1,6 @@
 import './App.css';
 import MapView from './components/MapView';
-import exampleGeoJSON from './data/exampleGeoJSON';
+import featureCollection from './data/featureCollection';
 import initDefaultIcon from './utils/leafletIcon';
 
 // initialize default Leaflet icon for markers
@@ -29,7 +29,7 @@ function App() {
       <MapView
         center={center}
         zoom={12}
-        data={exampleGeoJSON}
+        data={featureCollection}
         polygonStyle={polygonStyle}
         onEachFeature={onEachFeature}
       />
