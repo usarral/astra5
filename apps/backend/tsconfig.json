@@ -1,11 +1,8 @@
 {
 	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
+		"target": "ES2020",
+		"module": "CommonJS",
 		"baseUrl": "./src",
-		"paths": {
-			"@/*": ["*"]
-		},
 		"moduleResolution": "Node",
 		"outDir": "dist",
 		"importsNotUsedAsValues": "remove",
@@ -13,7 +10,7 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-        "resolveJsonModule": true   
+		"resolveJsonModule": true   
 	},
 	"include": ["src/**/*", "../server-base.ts"],
 	"exclude": ["node_modules"]

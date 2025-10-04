@@ -1,44 +1,50 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import informationRouter from './routes/information.routes';
+import { errorHandler as globalErrorHandler } from './middlewares/error-handler.middleware';
+import PinoLogger from './utils/logger/pinoLogger';
+import { Config } from './utils/config';
 
 export class Server {
-    public app: Application;
-    private readonly port: number | string;
+  public app: Application;
+  private readonly port: number | string;
+  private readonly logger: PinoLogger;
 
-    constructor(port?: number | string) {
-        this.app = express();
-        this.port = port || process.env.PORT || 3000;
-        this.middlewares();
-        this.routes();
-        this.errorHandler();
-    }
+  constructor(port?: number | string) {
+    this.app = express();
+    this.port = port || Config.PORT;
+    this.logger = PinoLogger.getInstance();
 
-    private middlewares() {
-        this.app.use(helmet());
-        this.app.use(cors());
-        this.app.use(express.json());
-        this.app.use(express.urlencoded({ extended: true }));
-    }
+    this.registerMiddlewares();
+    this.registerRoutes();
+    this.registerErrorHandler();
+  }
 
-    private routes() {
-        this.app.get('/', (req: Request, res: Response) => {
-            res.json({ message: 'API is running' });
-        });
-    }
+  private registerMiddlewares() {
+    this.app.use(helmet());
+    this.app.use(
+      cors({
+        origin: Config.CORS_ORIGIN,
+      }),
+    );
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+  }
 
-    private errorHandler() {
-        this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-            console.error(err.stack);
-            res.status(500).json({ error: 'Internal Server Error' });
-        });
-    }
+  private registerRoutes() {
+    this.app.use('/', informationRouter);
+  }
 
-    public start(callback?: () => void) {
-        this.app.listen(this.port, callback || (() => {
-            console.log(`Server running on port ${this.port}`);
-        }));
-    }
+  private registerErrorHandler() {
+    // Error handler registered after routes
+    this.app.use(globalErrorHandler);
+  }
+
+  public start(callback?: () => void) {
+    const boundCallback = callback ?? (() => this.logger.info('Server running', { port: this.port }));
+    this.app.listen(this.port as number, boundCallback);
+  }
 }
 
 export default Server;
