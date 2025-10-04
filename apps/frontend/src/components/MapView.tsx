@@ -23,8 +23,8 @@ const MapView = ({
   return (
     <MapContainer center={center} zoom={zoom} style={style}>
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; Google Maps Tiles'
+        url="http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}"
       />
 
   <GeoJSON data={data} style={polygonStyle} onEachFeature={onEachFeature} />
