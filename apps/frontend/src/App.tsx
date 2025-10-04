@@ -115,7 +115,6 @@ function App() {
             coords.push([lat, lon]);
           });
         }
-        // (no manejamos otras geometrías por ahora)
       });
 
       if (coords.length > 0) {
@@ -154,6 +153,7 @@ function App() {
         <FitBoundsToGeoJSON data={exampleGeoJSON} />
 
         {/* Marcadores y polígonos provienen ahora del GeoJSON */}
+        {/* TODO: Recibir datos reales desde un API o archivo */}
       </MapContainer>
     </div>
   );
