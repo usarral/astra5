@@ -1,6 +1,7 @@
 import './App.css';
 import MapView from './components/MapView';
 import featureCollection from './data/featureCollection';
+import type { Geojson } from './types/information';
 import initDefaultIcon from './utils/leafletIcon';
 
 // initialize default Leaflet icon for markers
@@ -16,10 +17,17 @@ function App() {
     weight: 2,
   };
 
-  const onEachFeature = (feature: any, layer: any) => {
+  const onEachFeature = (feature: Geojson, layer: any) => {
     if (feature.properties?.name) {
       layer.bindPopup(
-        `<strong>${feature.properties.name}</strong><br/>${feature.properties.description || ''}`
+        `<strong>
+          ${feature.properties.name}
+        </strong>
+        <br/>
+        ${feature.properties.description || ''}
+        <br/>
+        <i>${new Date(feature.properties.detection_date).toLocaleDateString()}</i>
+        `
       );
     }
   };

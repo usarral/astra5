@@ -22,4 +22,5 @@ export interface Geometry {
 export interface Properties {
     name:        string;
     description: string;
+    detection_date: Date;
 }

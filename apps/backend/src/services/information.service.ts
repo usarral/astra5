@@ -4,8 +4,8 @@ export async function fetchInformationList() {
     //get ID, name and geojson from information table to print on map
     const { data, error } = await supabase
         .from('information')
-        .select('id, name, geojson')
-        .order('detection_date', { ascending: false });
+        .select('id, geojson')
+        .order('id', { ascending: false });
 
     if (error) throw error;
     return data;
