@@ -1,4 +1,5 @@
-import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
+import { useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './App.css';
 import L from 'leaflet';
@@ -16,68 +17,60 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-// Ejemplo de datos GeoJSON (zona de Cataluña)
+// Datos GeoJSON: puntos en Navarra (Tafalla, Olite, Tudela) y un polígono (cuadro) alrededor de Pamplona
 const exampleGeoJSON = {
   type: "FeatureCollection",
   features: [
     {
       type: "Feature",
       properties: {
-        name: "Barcelona",
-        description: "Ciudad de Barcelona"
+        name: "Tafalla",
+        description: "Ciudad de Tafalla"
       },
       geometry: {
         type: "Point",
-        coordinates: [2.1734, 41.3851]
+        // GeoJSON usa [lon, lat]
+        coordinates: [-1.704656484, 42.51323936]
       }
     },
     {
       type: "Feature",
       properties: {
-        name: "Girona",
-        description: "Ciudad de Girona"
+        name: "Olite",
+        description: "Ciudad de Olite"
       },
       geometry: {
         type: "Point",
-        coordinates: [2.8214, 41.9794]
+        coordinates: [-1.679611308, 42.44574826]
       }
     },
     {
       type: "Feature",
       properties: {
-        name: "Lleida",
-        description: "Ciudad de Lleida"
+        name: "Tudela",
+        description: "Ciudad de Tudela"
       },
       geometry: {
         type: "Point",
-        coordinates: [0.6200, 41.6176]
+        coordinates: [-1.606666667, 42.06527778]
       }
     },
     {
       type: "Feature",
       properties: {
-        name: "Tarragona",
-        description: "Ciudad de Tarragona"
-      },
-      geometry: {
-        type: "Point",
-        coordinates: [1.2444, 41.1189]
-      }
-    },
-    {
-      type: "Feature",
-      properties: {
-        name: "Área de ejemplo",
-        description: "Polígono de ejemplo"
+        name: "Área de Pamplona",
+        description: "Pequeño polígono (cuadro) alrededor de Pamplona"
       },
       geometry: {
         type: "Polygon",
+        // Pequeña caja cuadrada centrada en Pamplona (42.8125, -1.6458)
+        // GeoJSON: [lon, lat]
         coordinates: [[
-          [2.0, 41.3],
-          [2.3, 41.3],
-          [2.3, 41.5],
-          [2.0, 41.5],
-          [2.0, 41.3]
+          [-1.6758, 42.7925],
+          [-1.6158, 42.7925],
+          [-1.6158, 42.8325],
+          [-1.6758, 42.8325],
+          [-1.6758, 42.7925]
         ]]
       }
     }
@@ -85,9 +78,9 @@ const exampleGeoJSON = {
 };
 
 function App() {
-  // Centro del mapa en Cataluña
-  const center: [number, number] = [41.5, 1.5];
-  const zoom = 8;
+  // Centro del mapa en Pamplona
+  const center: [number, number] = [42.8125, -1.6458];
+  const zoom = 12;
 
   // Estilo para los polígonos
   const polygonStyle = {
@@ -104,6 +97,37 @@ function App() {
         `<strong>${feature.properties.name}</strong><br/>${feature.properties.description || ''}`
       );
     }
+  };
+
+  // Componente que ajusta el mapa para mostrar todo el GeoJSON
+  const FitBoundsToGeoJSON = ({ data }: { data: any }) => {
+    const map = useMap();
+    // Extraer todas las coordenadas y construir LatLngBounds
+    try {
+      const coords: [number, number][] = [];
+      data.features.forEach((f: any) => {
+        if (f.geometry.type === 'Point') {
+          const [lon, lat] = f.geometry.coordinates;
+          coords.push([lat, lon]);
+        } else if (f.geometry.type === 'Polygon') {
+          f.geometry.coordinates[0].forEach((c: any) => {
+            const [lon, lat] = c;
+            coords.push([lat, lon]);
+          });
+        }
+        // (no manejamos otras geometrías por ahora)
+      });
+
+      if (coords.length > 0) {
+        // @ts-ignore
+        const bounds = (L as any).latLngBounds(coords as any);
+        map.fitBounds(bounds, { padding: [20, 20] });
+      }
+    } catch (err) {
+      // si algo falla, no romper la app
+      console.error('FitBounds error', err);
+    }
+    return null;
   };
 
   return (
@@ -126,13 +150,10 @@ function App() {
           onEachFeature={onEachFeature}
         />
 
-        {/* Marcador adicional de ejemplo */}
-        <Marker position={[41.3851, 2.1734]}>
-          <Popup>
-            <strong>Barcelona</strong><br />
-            Ejemplo de marcador personalizado
-          </Popup>
-        </Marker>
+        {/* Ajustar el zoom/centro para que quepa todo Navarra */}
+        <FitBoundsToGeoJSON data={exampleGeoJSON} />
+
+        {/* Marcadores y polígonos provienen ahora del GeoJSON */}
       </MapContainer>
     </div>
   );
