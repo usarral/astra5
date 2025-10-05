@@ -2,7 +2,7 @@ import { Config } from "../utils/config";
 import type { InformationService, Item } from "../types/types";
 
 export class BackendService {
-    private readonly baseUrl: string = Config.BACKEND_URL || "http://localhost:3000";
+    private readonly baseUrl: string = Config.BACKEND_URL || "https://astra5-api.usarral.es";
 
     constructor() {
         this.baseUrl = Config.BACKEND_URL;
