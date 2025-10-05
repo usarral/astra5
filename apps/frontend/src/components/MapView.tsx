@@ -126,7 +126,7 @@ const MapView = ({
               checked={showSAR}
               onChange={() => setShowSAR((s) => !s)}
             />{' '}
-            Mostrar imagen SAR
+            Show SAR overlay
           </label>
         </div>
         <div style={{ marginBottom: 8 }}>
