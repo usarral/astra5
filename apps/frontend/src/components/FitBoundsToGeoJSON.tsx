@@ -44,21 +44,30 @@ const FitBoundsToGeoJSON = ({ data, padding = [20, 20] }: Props) => {
 
         const isSinglePoint = ne.equals(sw);
 
+        // Unified animation duration for both point and bounds transitions
+        const animationDuration = 0.7;
+
         if (isSinglePoint) {
           const center = bounds.getCenter();
-          // Choose a reasonable zoom for points. Prefer current zoom + 2 but
+          // Choose a reasonable zoom for points. Prefer current zoom + 6 but
           // don't exceed map maxZoom (if available) or 18.
           const currentZoom = map.getZoom() ?? 13;
           const maxZoom = typeof map.getMaxZoom === "function" ? map.getMaxZoom() ?? 18 : 18;
-          const increasedZoom = currentZoom + 8;
+          const increasedZoom = currentZoom + 6;
           const targetZoom = Math.min(maxZoom, increasedZoom, 18);
 
           // Use flyTo for a smooth animated transition to the point
-          map.flyTo(center, targetZoom, { duration: 0.7 });
+          map.flyTo(center, targetZoom, { duration: animationDuration });
         } else {
-          // For areas/polygons/multi-point collections use fitBounds so the
-          // whole geometry is visible. Enable animation where supported.
-          map.fitBounds(bounds, { padding, maxZoom: 18 });
+          // For areas/polygons/multi-point collections use flyToBounds so the
+          // transition is animated with the same duration as flyTo for points.
+          // fall back to fitBounds if flyToBounds isn't available.
+          const hasFlyToBounds = typeof (map as any).flyToBounds === "function";
+          if (hasFlyToBounds) {
+            (map as any).flyToBounds(bounds, { padding, duration: animationDuration, maxZoom: 18 });
+          } else {
+            map.fitBounds(bounds, { padding, maxZoom: 18 });
+          }
         }
       }
     } catch (err) {
