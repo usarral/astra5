@@ -33,6 +33,8 @@ const MapView = ({
     Point: true,
     Polygon: true,
   });
+  // Toggle for showing SAR image overlay
+  const [showSAR, setShowSAR] = useState(true);
   const [nameFilter, setNameFilter] = useState("");
 
   // Filtered GeoJSON data derived from incoming `data` prop
@@ -74,15 +76,17 @@ const MapView = ({
 
         <GeoJSON data={filteredData as any} style={polygonStyle as any} onEachFeature={onEachFeature as any} />
 
-        {/* Use ImageOverlay instead of TileLayer for static image */}
-        <ImageOverlay
-          bounds={[
-            [39.292975, -0.407625],
-            [39.375418, -0.305073],
-          ]}
-          url="/S1_2024-10-01_band1.png"
-          opacity={1}
-        />
+        {/* Use ImageOverlay instead of TileLayer for static image (conditionally rendered) */}
+        {showSAR && (
+          <ImageOverlay
+            bounds={[
+              [39.292975, -0.407625],
+              [39.375418, -0.305073],
+            ]}
+            url="/S1_2024-10-01_band1.png"
+            opacity={1}
+          />
+        )}
 
         {/* Fit map bounds to filtered GeoJSON data */}
         <FitBoundsToGeoJSON data={filteredData} />
@@ -111,6 +115,20 @@ const MapView = ({
           </select>
         </div>
         <MapSeparator />
+        <div style={{ marginBottom: 8 }}>
+          <div style={{ display: "block", fontWeight: 600, marginBottom: 4 }}>
+            SAR image
+          </div>
+          <label style={{ display: "block" }} htmlFor="toggle-sar">
+            <input
+              id="toggle-sar"
+              type="checkbox"
+              checked={showSAR}
+              onChange={() => setShowSAR((s) => !s)}
+            />{' '}
+            Mostrar imagen SAR
+          </label>
+        </div>
         <div style={{ marginBottom: 8 }}>
           <div style={{ display: "block", fontWeight: 600, marginBottom: 4 }}>
             Detection types
