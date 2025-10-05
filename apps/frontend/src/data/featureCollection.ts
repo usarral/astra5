@@ -1,16 +1,17 @@
 import { BackendService } from "./getBackendData";
+import type { Item, GeoJSONFeature, GeoJSONFeatureCollection } from "../types/types";
 
-const getFeatures = async () => {
- // Call to the backend to get all the features
- const backendService = new BackendService();
- const features = await backendService.getInformation();
-let featureArray = features.data.map((item: any) => item.geojson);
- console.log('Fetched features from backend:', featureArray);
- if (featureArray.length === 0) {
-   console.warn('No features fetched from backend, using mocked data.');
-   featureArray = mockedFeatures;
- }
- return featureArray;
+const getFeatures = async (): Promise<GeoJSONFeature[]> => {
+  // Call to the backend to get all the features
+  const backendService = new BackendService();
+  const features = await backendService.getInformation();
+  let featureArray: GeoJSONFeature[] = features.data.map((item: Item) => item.geojson);
+  console.log("Fetched features from backend:", featureArray);
+  if (!featureArray || featureArray.length === 0) {
+    console.warn("No features fetched from backend, using mocked data.");
+    featureArray = mockedFeatures as GeoJSONFeature[];
+  }
+  return featureArray;
 };
 const mockedFeatures = [
   {
@@ -67,8 +68,8 @@ const mockedFeatures = [
   }
 ]
 
-const featureCollection = {
-  type: 'FeatureCollection',
-  features: [...await getFeatures()],
+const featureCollection: GeoJSONFeatureCollection = {
+  type: "FeatureCollection",
+  features: [...(await getFeatures())],
 };
 export default featureCollection;

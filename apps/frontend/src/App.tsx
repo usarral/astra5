@@ -1,8 +1,10 @@
-import './App.css';
-import MapView from './components/MapView';
-import featureCollection from './data/featureCollection';
-import type { Geojson } from './types/information';
-import initDefaultIcon from './utils/leafletIcon';
+import "./App.css";
+import MapPopup from "./components/MapPopup";
+import MapView from "./components/MapView";
+import featureCollection from "./data/featureCollection";
+import type { GeoJSONFeature } from "./types/types";
+import type { Layer } from "leaflet";
+import initDefaultIcon from "./utils/leafletIcon";
 
 // initialize default Leaflet icon for markers
 initDefaultIcon();
@@ -11,29 +13,22 @@ function App() {
   const center: [number, number] = [42.8125, -1.6458];
 
   const polygonStyle = {
-    fillColor: '#3388ff',
+    fillColor: "#3388ff",
     fillOpacity: 0.3,
-    color: '#3388ff',
+    color: "#2766beff",
     weight: 2,
   };
 
-  const onEachFeature = (feature: Geojson, layer: any) => {
+  const onEachFeature = (feature: GeoJSONFeature, layer: Layer) => {
+    console.log("Feature:", feature);
+    console.log("Layer:", layer);
     if (feature.properties?.name) {
-      layer.bindPopup(
-        `<strong>
-          ${feature.properties.name}
-        </strong>
-        <br/>
-        ${feature.properties.description || ''}
-        <br/>
-        <i>${new Date(feature.properties.detection_date).toLocaleDateString()}</i>
-        `
-      );
+      layer.bindPopup(MapPopup(feature.properties));
     }
   };
 
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
+    <div style={{ height: "100vh", width: "100%" }}>
       <MapView
         center={center}
         zoom={12}
