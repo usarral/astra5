@@ -7,6 +7,6 @@ export default function MapPopup(properties: Properties) {
         <br/>
         ${properties.description || ""}
         <br/>
-        <i>${new Date(properties.detection_date).toLocaleDateString()}</i>
+        ${properties.detection_date ? `Detection Date: ${new Date(properties.detection_date).toLocaleDateString()}` : ""}
         `;
 }
