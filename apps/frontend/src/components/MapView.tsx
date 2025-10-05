@@ -80,20 +80,7 @@ const MapView = ({
       </MapContainer>
 
       {/* Controls overlay */}
-      <div
-        style={{
-          position: "absolute",
-          top: 10,
-          right: 10,
-          background: "rgba(255,255,255,0.95)",
-          padding: 10,
-          borderRadius: 6,
-          boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
-          zIndex: 1000,
-          minWidth: 200,
-          fontSize: 14,
-        }}
-      >
+      <div className="map-controls" style={{ position: "absolute", top: 10, right: 10 }}>
         <div style={{ marginBottom: 8 }}>
           <label
             htmlFor="base-layer-select"
