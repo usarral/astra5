@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON , ImageOverlay } from "react-leaflet";
 import type { Layer } from "leaflet";
 import type { GeoJSONFeature } from "../types/types";
 import "leaflet/dist/leaflet.css";
@@ -72,8 +72,17 @@ const MapView = ({
           url={baseLayers[selectedBase].url}
         />
 
-        {/* GeoJSONs (use filtered data) */}
         <GeoJSON data={filteredData as any} style={polygonStyle as any} onEachFeature={onEachFeature as any} />
+
+        {/* Use ImageOverlay instead of TileLayer for static image */}
+        <ImageOverlay
+          bounds={[
+            [39.292975, -0.407625],
+            [39.375418, -0.305073],
+          ]}
+          url="/src/assets/S1_2024-10-01_band1.png"
+          opacity={0.7}
+        />
 
         {/* Fit map bounds to filtered GeoJSON data */}
         <FitBoundsToGeoJSON data={filteredData} />
