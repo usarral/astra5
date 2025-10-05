@@ -7,15 +7,15 @@ WORKDIR /app
 
 # Production dependencies stage
 FROM base AS prod-deps
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 # Install only production dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile --ignore-scripts
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --no-frozen-lockfile --ignore-scripts
 
 # Build stage - install all dependencies and build
 FROM base AS build
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 # Install all dependencies (including dev dependencies)
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --no-frozen-lockfile --ignore-scripts
 COPY . .
 RUN pnpm run build
 
