@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 import type { GeoJSONFeature } from "../types/types";
@@ -10,6 +10,8 @@ type Props = {
 
 const FitBoundsToGeoJSON = ({ data, padding = [20, 20] }: Props) => {
   const map = useMap();
+  // store last applied bounds string to avoid unnecessary re-fitting
+  const lastBoundsRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!data?.features) return;
@@ -41,6 +43,14 @@ const FitBoundsToGeoJSON = ({ data, padding = [20, 20] }: Props) => {
 
         const ne = bounds.getNorthEast();
         const sw = bounds.getSouthWest();
+
+        // Create a simple string key for comparison
+        const boundsKey = `${ne.lat.toFixed(6)},${ne.lng.toFixed(6)},${sw.lat.toFixed(6)},${sw.lng.toFixed(6)}`;
+
+        // If bounds haven't changed since last time, skip re-fitting to avoid
+        // unnecessary zoom/pan (this prevents toggling overlays from forcing a zoom out)
+        if (lastBoundsRef.current === boundsKey) return;
+        lastBoundsRef.current = boundsKey;
 
         const isSinglePoint = ne.equals(sw);
 
