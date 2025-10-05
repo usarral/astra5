@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import MapPopup from "./components/MapPopup";
 import MapView from "./components/MapView";
@@ -13,6 +13,21 @@ initDefaultIcon();
 function App() {
   const [videoOpen, setVideoOpen] = useState(false);
   const [videoId, setVideoId] = useState<string | null>(null);
+
+  // close modal on Escape even if overlay isn't focused
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setVideoOpen(false);
+        setVideoId(null);
+      }
+    };
+
+    if (videoOpen) window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [videoOpen]);
 
   const center: [number, number] = [42.8125, -1.6458];
 
