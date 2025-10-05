@@ -14,9 +14,9 @@ function App() {
 
   const polygonStyle = {
     fillColor: "#3388ff",
-    fillOpacity: 0.3,
+    fillOpacity: 0,
     color: "#2766beff",
-    weight: 2,
+    weight: 6,
   };
 
   const onEachFeature = (feature: GeoJSONFeature, layer: Layer) => {

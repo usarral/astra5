@@ -80,8 +80,8 @@ const MapView = ({
             [39.292975, -0.407625],
             [39.375418, -0.305073],
           ]}
-          url="/src/assets/S1_2024-10-01_band1.png"
-          opacity={0.7}
+          url="/S1_2024-10-01_band1.png"
+          opacity={1}
         />
 
         {/* Fit map bounds to filtered GeoJSON data */}

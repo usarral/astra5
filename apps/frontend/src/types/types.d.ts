@@ -28,4 +28,5 @@ export interface Properties {
   name: string;
   description?: string;
   detection_date?: string | Date;
+  has_image?: boolean;
 }
