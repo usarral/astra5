@@ -182,7 +182,7 @@ const MapView = ({
           href="https://github.com/usarral/astra5"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Apertura del repositorio GitHub en una nueva pestaña"
+          aria-label="Repositorio GitHub en una nueva pestaña"
           style={{
             display: "inline-flex",
             alignItems: "center",
